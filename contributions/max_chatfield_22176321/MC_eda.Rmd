@@ -1,0 +1,73 @@
+---
+title: "Tenders data EDA"
+output:
+  html_document: 
+    toc: true
+  html_notebook: default
+  pdf_document: 
+    toc: false
+    number_sections: no
+  word_document: 
+    toc: true
+---
+
+```{r}
+library(readxl)
+tenders <- read_excel("tenders.xlsx", col_types = c("text", "text", "text", "text", "text", "text", "text", "date", "numeric", "text", "text", "text", "text", "numeric", "numeric", "text", "date", "date", "date", "date", "numeric", "text", "text", "text", "text", "text", "text", "text", "numeric", "numeric", "numeric", "numeric", "text", "date", "date", "text"), na = c("", "NULL"))
+postcodes <- read_excel("postcodes.xlsx", na = c("", "NULL"))
+```
+
+How many tenders have original contract value + variation amount != revised contract value
+```{r}
+length(which(!(is.na(tenders$`Variation Amount`) | tenders$`Original Contract Value` + tenders$`Variation Amount` == tenders$`Revised Contract Value`)))
+```
+
+
+```{r}
+library(ggplot2)
+ggplot(subset(tenders, `Number of Submissions` < 20)) + geom_bar(aes(x = `Number of Submissions`))
+length(which(tenders$`Number of Submissions` >= 20))
+```
+
+```{r}
+tenders$`Type of Work` <- factor(tenders$`Type of Work`)
+tenders$`UNSPSC Code` <- factor(tenders$`UNSPSC Code`)
+tenders$`Procurement Method` <- factor(tenders$`Procurement Method`)
+tenders$`Period Contract` <- factor(tenders$`Period Contract`)
+tenders$`CUA Contract` <- tenders$`CUA Contract` == 'Yes'
+```
+
+```{r}
+ggplot(tenders) + geom_bar(aes(x = `UNSPSC Code`))
+```
+
+```{r}
+ggplot(tenders) + geom_bar(aes(x = `Type of Work`))
+```
+
+Grab the top n frequencies of unspsc code in the dataset and see some stats about them
+```{r}
+values <- 5
+unfactor <- function(x) {as.numeric(levels(x))[x]}
+top_n <- as.data.frame(sort(table(tenders$`UNSPSC Code`), decreasing = TRUE)[seq(values)])
+top_n <- cbind(top_n, unlist(sapply(top_n$Var1, function(code) {tenders[which(tenders$`UNSPSC Code` == unfactor(code))[1], "UNSPSC Title"]}), use.names = FALSE))
+tenders_sub <- subset(tenders, unfactor(tenders$`UNSPSC Code`) %in% top_n$Var1)
+```
+
+```{r}
+ggplot(tenders_sub) + geom_boxplot(aes(x = log10(`Revised Contract Value`), y = `UNSPSC Title`))
+```
+
+
+```{r}
+ggplot(subset(tenders_sub, !is.na(tenders_sub$`Variation Amount`) & tenders_sub$`Variation Amount` > 0)) + geom_boxplot(aes(x = log10(`Variation Amount`), y = `UNSPSC Title`))
+ggplot(subset(tenders_sub, !is.na(tenders_sub$`Variation Amount`) & tenders_sub$`Variation Amount` < 0)) + geom_boxplot(aes(x = log10(-`Variation Amount`), y = `UNSPSC Title`))
+```
+
+```{r}
+ggplot(subset(tenders_sub, !is.na(tenders_sub$`Number of Variations`))) + geom_boxplot(aes(x = log2(`Number of Variations`), y = `UNSPSC Title`))
+```
+
+
+
+
