@@ -68,6 +68,10 @@ ggplot(subset(tenders_sub, !is.na(tenders_sub$`Variation Amount`) & tenders_sub$
 ggplot(subset(tenders_sub, !is.na(tenders_sub$`Number of Variations`))) + geom_boxplot(aes(x = log2(`Number of Variations`), y = `UNSPSC Title`))
 ```
 
+```{r}
+str(tenders[1,])
+str(postcodes[which(postcodes$`Geo Suburb` == 'Murdoch'),])
+```
 
 
 
