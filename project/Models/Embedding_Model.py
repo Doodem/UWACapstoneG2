@@ -18,6 +18,8 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import torch.nn.functional as F
 from transformers import BertTokenizer
+from bs4 import BeautifulSoup
+
 #  model class 
 
 class Pretrained_model(nn.Module):
@@ -42,11 +44,11 @@ class Pretrained_model(nn.Module):
         return pooled_output
     
 def preprocess_for_bert(data):
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-    x = tokenizer(text = data,return_tensors = 'pt')
+    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased',model_max_length=512)
+    x = tokenizer(text = data,return_tensors = 'pt',truncation=True)
     return x
 
-def preprocess_and_forward(data):
+def preprocess_and_forward(data,model):
     x = preprocess_for_bert(data)
     
     with torch.no_grad():
@@ -59,7 +61,13 @@ def preprocess_and_forward(data):
 def cosine_sim(x1,x2):
     return F.cosine_similarity(x1,x2)
 
+
+def remove_html_tags(text):
     
+    soup = BeautifulSoup(text, "html.parser")
+    return soup.get_text()
+
+
 
     
 contraction_dict = {"ain't": "is not", "aren't": "are not","can't": "cannot", "'cause": "because", "could've": "could have", 
