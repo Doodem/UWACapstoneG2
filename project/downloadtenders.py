@@ -13,7 +13,7 @@ import logging
 from tqdm import tqdm
 import argparse
 
-Tenders = pd.read_excel("C:/Users/Mitch/git/UWACapstoneG2/data/UpdatedTenders.xlsx")
+Tenders = pd.read_excel("/home/ucc/doodem/Documents/git/UWACapstoneG2/data/UpdatedTenders.xlsx")
 CleanTenders = Tenders[["Reference Number", "TenderLink"]].dropna(subset=["TenderLink"]).drop_duplicates()
 TenderDict = dict(zip(CleanTenders["Reference Number"], CleanTenders["TenderLink"]))
 ProTenders = {key: value for key, value in TenderDict.items() if "qas" not in value}
@@ -43,8 +43,10 @@ def download_multiple_tenders(max_workers, tender_dict, path):
     
 def download_tender(link, ref, path):
     options = Options()
-    options.add_argument("--headless=new")
+    options.add_argument("--headless")
     options.add_argument(f"user-agent={CUSTOM_USER_AGENT }")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
     prefs = {"download.default_directory": path}
     options.add_experimental_option("prefs", prefs)
 
@@ -57,7 +59,6 @@ def download_tender(link, ref, path):
     buttons = ["Download Now", "Download for Information Only", "Download Documents"]
     for button in buttons:
         if not click_button(driver, wait, button, ref):
-            print(f"Quitting {ref} Driver")
             driver.quit()
             break
         
@@ -72,7 +73,6 @@ def open_link(driver, link, ref):
         except Exception as e:
             error_message = f"Error: {ref}, {e}"
             logging.error(error_message)
-            print(f"Quitting {ref} Driver")
             driver.quit()
             break
         return
