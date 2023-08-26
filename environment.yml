@@ -1,0 +1,7 @@
+name: capstone
+channels:
+  - defaults
+dependencies:
+  - jupyter
+  - gensim
+  - pytorch

@@ -1,0 +1,5 @@
+create conda env from environment.yml file:
+conda env create -f environment.yml
+
+exporting current conda env, platform independent:
+conda env export -n capstone -f environment.yml --from-history
