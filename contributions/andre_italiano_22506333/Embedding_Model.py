@@ -43,13 +43,10 @@ class Pretrained_model(nn.Module):
         pooled_output = self.embedding_model(input_ids=input_ids,attention_mask=attention_mask,token_type_ids=token_type_ids)
         return pooled_output
     
-def preprocess_for_bert(data):
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased',model_max_length=512)
-    x = tokenizer(text = data,return_tensors = 'pt',truncation=True)
-    return x
 
-def preprocess_and_forward(data,model):
-    x = preprocess_for_bert(data)
+
+def preprocess_and_forward(data,text_processor,model):
+    x = text_processor.preprocess_text(data)
     
     with torch.no_grad():
         hidden_out = model(x['input_ids'],x['attention_mask'],x['token_type_ids'])
@@ -67,7 +64,10 @@ def remove_html_tags(text):
     soup = BeautifulSoup(text, "html.parser")
     return soup.get_text()
 
-
+def bert_preprocessing(text):
+    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased',model_max_length=512)
+    
+    return tokenizer(text = text,return_tensors = 'pt',truncation=True)
 
     
 contraction_dict = {"ain't": "is not", "aren't": "are not","can't": "cannot", "'cause": "because", "could've": "could have", 
@@ -95,16 +95,22 @@ contraction_dict = {"ain't": "is not", "aren't": "are not","can't": "cannot", "'
 
 # preprocessing class
 class Textprocessor:
-    def __init__(self, contraction_mapping = contraction_dict):
+    def __init__(self, contraction_mapping = contraction_dict,model="bert"):
         self.lemmatizer = WordNetLemmatizer()
         self.contraction_mapping = contraction_mapping
+        
+        self.model = "bert"
+        if self.model == "bert":
+            self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased',model_max_length=512)
 
+            
     def preprocess_text(self, text):
-        text = self._to_lower(text)
-        text = self._expand_contractions(text)
-        text = self._remove_punctuation(text)
-        tokens = self._tokenize(text)
-        tokens = self._lemmatize_tokens(tokens)
+        text_lower = self._to_lower(text)
+        text_contractions = self._expand_contractions(text_lower)
+        text_no_punct = self._remove_punctuation(text_contractions)
+        tokens = self._lemmatize_tokens(text_no_punct)
+        tokens = self._tokenize(tokens)
+        
         return tokens
 
     def _to_lower(self, text):
@@ -119,11 +125,11 @@ class Textprocessor:
         return re.sub(r'[^\w\s]', '', text)
 
     def _tokenize(self, text):
-        return word_tokenize(text)
+        return self.tokenizer(text = text,return_tensors = 'pt',truncation=True)
 
     def _lemmatize_tokens(self, tokens):
-        return [self.lemmatizer.lemmatize(token) for token in tokens]
-# evalaute function
-def evaluate(data):
-    pass
-
+        text_tokenized = [self.lemmatizer.lemmatize(token) for token in tokens]
+        text = ""
+        for item in text_tokenized:
+            text = text + " " + item
+        return text 
