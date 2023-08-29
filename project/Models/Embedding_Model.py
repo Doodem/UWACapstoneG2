@@ -19,6 +19,7 @@ from nltk.stem import WordNetLemmatizer
 import torch.nn.functional as F
 from transformers import BertTokenizer
 from bs4 import BeautifulSoup
+from numpy.linalg import norm
 
 #  model class 
 
@@ -41,7 +42,10 @@ class Pretrained_model(nn.Module):
         
     def forward(self,input_ids,attention_mask,token_type_ids):
         pooled_output = self.embedding_model(input_ids=input_ids,attention_mask=attention_mask,token_type_ids=token_type_ids)
-        return pooled_output
+        cls_token = pooled_output.last_hidden_state
+        cls_token = cls_token[0][0]
+        cls_token = cls_token.unsqueeze(0)
+        return cls_token
     
 
 
@@ -49,14 +53,12 @@ def preprocess_and_forward(data,text_processor,model):
     x = text_processor.preprocess_text(data)
     
     with torch.no_grad():
-        hidden_out = model(x['input_ids'],x['attention_mask'],x['token_type_ids'])
-    cls_token = hidden_out.last_hidden_state
-    cls_token = cls_token[0][0]
-    cls_token = cls_token.unsqueeze(0)
+        cls_token = model(x['input_ids'],x['attention_mask'],x['token_type_ids'])
+    
     return cls_token
 
-def cosine_sim(x1,x2):
-    return F.cosine_similarity(x1,x2)
+def cosine_sim(A,B):
+    return np.dot(A,B)/(norm(A)*norm(B))
 
 
 def remove_html_tags(text):
