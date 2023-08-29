@@ -1,7 +1,7 @@
 # importing modules 
 import pandas as pd
 from torch import nn
-from transformers import BertTokenizer, BertModel, BigBirdModel,AutoModelForSequenceClassification,BertConfig
+from transformers import BertTokenizer, BertModel, BigBirdModel, LongformerModel , BertConfig,BigBirdTokenizer
 import numpy as np
 import math
 import gensim.downloader as api
@@ -17,7 +17,7 @@ nltk.download('averaged_perceptron_tagger')
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import torch.nn.functional as F
-from transformers import BertTokenizer
+from transformers import BertTokenizer, LongformerTokenizer
 from bs4 import BeautifulSoup
 from numpy.linalg import norm
 
@@ -32,16 +32,30 @@ class Pretrained_model(nn.Module):
             self.embedding_model = BertModel.from_pretrained('bert-base-uncased',config=self.bert_config)
             self.model_base = 'bert-base-uncased'
         elif model.lower() == "longformer":
-            self.embedding_model = AutoModelForSequenceClassification.from_pretrained("allenai/longformer-base-4096")
+            self.embedding_model = LongformerModel.from_pretrained("allenai/longformer-base-4096",output_hidden_states = True, return_dict = True)
+            
             self.model_base = "allenai/longformer-base-4096"
         elif model.lower() == "bigbird":
-            self.embedding_model = BigBirdModel.from_pretrained("google/bigbird-roberta-base")
+            self.embedding_model = BigBirdModel.from_pretrained("google/bigbird-roberta-base",output_hidden_states = True, return_dict = True)
             self.model_base ="google/bigbird-roberta-base"
         
         
         
     def forward(self,input_ids,attention_mask,token_type_ids):
-        pooled_output = self.embedding_model(input_ids=input_ids,attention_mask=attention_mask,token_type_ids=token_type_ids)
+        
+        if self.model_base == "allenai/longformer-base-4096":
+            global_attention_mask = [1].extend([0]*input_ids.shape[-1])
+            pooled_output = self.embedding_model(input_ids=input_ids,attention_mask=attention_mask,token_type_ids=token_type_ids,global_attention_mask = global_attention_mask)
+            
+            return pooled_output.last_hidden_state[:,0]
+        
+        if self.model_base = "google/bigbird-roberta-base":
+            global_attention_mask = [1].extend([0]*input_ids.shape[-1])
+            pooled_output = self.embedding_model(input_ids=input_ids,attention_mask=attention_mask,token_type_ids=token_type_ids)
+            
+            return pooled_output.last_hidden_state[:,0]
+        
+        pooled_output = self.embedding_model(input_ids=input_ids,attention_mask=attention_mask,token_type_ids=token_type_ids)        
         cls_token = pooled_output.last_hidden_state
         cls_token = cls_token[0][0]
         cls_token = cls_token.unsqueeze(0)
@@ -104,6 +118,10 @@ class Textprocessor:
         self.model = "bert"
         if self.model == "bert":
             self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased',model_max_length=512)
+        if self.model == "longformer":
+            self.tokenizer = LongformerTokenizer.from_pretrained("allenai/longformer-base-4096")
+        if self.model == "bigbird":
+            self.tokenizer = BigBirdTokenizer.from_pretrained("google/bigbird-roberta-base")
 
             
     def preprocess_text(self, text):
