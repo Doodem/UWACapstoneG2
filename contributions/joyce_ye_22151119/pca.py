@@ -1,52 +1,31 @@
+import numpy as np
 from sklearn.decomposition import PCA
-pca = PCA(n_components=2) # choose appropriate number of components to keep
-pca.fit(sen_emb)
-sen_emb_reduced = pca.transform(sen_emb)
-print('Reduced sentence embedding shape:', sen_emb_reduced.shape)
 
 
-def biplot(reduced_data, labels, pc, variable):
-    """plot compositional biplot for two principle components
+embedding_vectors = [...]
 
-    :param reduced_data: embedding vector processed by PCA
-    :param labels: labels of original dataset
-    :param pc: all the principle components
-    :param variable: the name of the variables of the data set
-    """
-    plt.figure(1, figsize=(14, 10))
+# Convert the list of vectors to a numpy array
+embedding_array = np.array(embedding_vectors)
 
-    legend = []  #
-    #classes = np.unique(labels)  # label type
-    n = pc.shape[1]
-    # colors = ['g', 'r', 'y']
-    # markers = ['o', '^', 'x']
+# Number of principal components you want to retain
+num_components = 50  # Can adjust this as needed
 
-    x = reduced_data[:, 0]  # variable contributions for PC1
-    y = reduced_data[:, 1]  # variable contributions for PC2
-    scalex = 1.0 / (x.max() - x.min())
-    scaley = 1.0 / (y.max() - y.min())
+# Initialize the PCA model with the desired number of components
+pca = PCA(n_components=num_components)
 
-    # Draw a data point projection plot that is projected to
-    # a two-dimensional plane using normal PCA
-    #for i, label in enumerate(classes):
-        plt.scatter(x[labels == label] * scalex,
-                    y[labels == label] * scaley,
-                    linewidth=0.01)
-        # hyperparameter in plt.scatter(): c=colors[i], marker=markers[i]
-        legend.append("Label: {}".format(label))
+# Fit the PCA model to your data and transform the data
+reduced_vectors = pca.fit_transform(embedding_array)
 
-    #plt.legend(legend)
+# Now, reduced_vectors contains the lower-dimensional representation of your data
+# Each row of reduced_vectors corresponds to a transformed data point
 
-    # plot arrows as the variable contribution,
-    # each variable has a score for PC1 and for PC2 respectively
-    for i in range(n):
-        plt.arrow(0, 0, pc[0, i], pc[1, i], color='k', alpha=0.7,
-                  linewidth=1, )
-        plt.text(pc[0, i] * 1.01, pc[1, i] * 1.01, variable[i],
-                 ha='center', va='center', color='k', fontsize=12)
+# If you want to access the principal components themselves, you can use pca.components_
 
-    plt.xlabel("$PC1$")
-    plt.ylabel("$PC2$")
-    plt.title("Compositional biplot")
-    plt.grid()
-    # save_fig("Compositional biplot")
+# You can access the amount of variance explained by each principal component using pca.explained_variance_ratio_
+
+# You can also access the cumulative explained variance using np.cumsum(pca.explained_variance_ratio_)
+
+# Print the cumulative explained variance to see how much information is retained
+print("Cumulative Explained Variance:", np.cumsum(pca.explained_variance_ratio_))
+
+
