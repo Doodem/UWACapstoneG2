@@ -20,6 +20,7 @@ import torch.nn.functional as F
 from transformers import BertTokenizer, LongformerTokenizer
 from bs4 import BeautifulSoup
 from numpy.linalg import norm
+from nltk import tokenize
 
 #  model class 
 
@@ -153,3 +154,5 @@ class Textprocessor:
         for item in text_tokenized:
             text = text + " " + item
         return text 
+    def tokenize_sentence(self,doc):
+        return tokenize.sent_tokenize(doc)
