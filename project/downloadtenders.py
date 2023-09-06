@@ -13,11 +13,6 @@ import logging
 from tqdm import tqdm
 import argparse
 
-Tenders = pd.read_excel("/home/ucc/doodem/Documents/git/UWACapstoneG2/data/UpdatedTenders.xlsx")
-CleanTenders = Tenders[["Reference Number", "TenderLink"]].dropna(subset=["TenderLink"]).drop_duplicates()
-TenderDict = dict(zip(CleanTenders["Reference Number"], CleanTenders["TenderLink"]))
-ProTenders = {key: value for key, value in TenderDict.items() if "qas" not in value}
-
 LOG_FILENAME = 'error_logs.txt'
 logging.basicConfig(filename=LOG_FILENAME)
 
@@ -69,7 +64,7 @@ def download_tender(link, ref, path):
         click_button(driver, wait, button, ref)
             
     # Wait for downloads to complete
-    time.sleep(20)
+    time.sleep(40)
     driver.quit()
 
 def open_link(driver, link, ref):
@@ -104,16 +99,22 @@ def log_error(ref, e):
     
 def main():
     parser = argparse.ArgumentParser(description="Download Tenders")
-    parser.add_argument("--max_workers", type=int, default=10, help="Maximum number of worker threads")
+    parser.add_argument("--max_workers", type=int, default=50, help="Maximum number of worker threads")
     parser.add_argument("--batch_size", type=int, default=5, help="Number of requests per batch")
     parser.add_argument("--batch_interval", type=int, default=10, help="Time inbetween batch requests")
-    parser.add_argument("--path", type=str, default="./downloads", help="Path to save downloaded files")
+    parser.add_argument("--path", type=str, help="Path to save downloaded files")
+    parser.add_argument("--file", type=str, help="File to read from")
     args = parser.parse_args()
 
-    batch_request_tenders(args.max_workers, args.batch_size, args.batch_interval, ProTenders, args.path)
+    Tenders = pd.read_excel(args.file)
+    CleanTenders = Tenders[["Reference Number", "TenderLink"]].dropna(subset=["TenderLink"]).drop_duplicates()
+    TenderDict = dict(zip(CleanTenders["Reference Number"], CleanTenders["TenderLink"]))
+
+    batch_request_tenders(args.max_workers, args.batch_size, args.batch_interval, TenderDict, args.path)
 
 if __name__ == "__main__":
     main()
     
 # how to run
-# python downloadtenders.py --max_workers 10 --batch_size 5 --batch_interval 10 --path /path/to/save/downloads
+# python downloadtenders.py --max_workers 50 --batch_size 5 --batch_interval 10 --path /path/to/save/downloads --file /path/to/data/file
+# /home/ucc/doodem/Documents/git/UWACapstoneG2/data/UpdatedTenders.xlsx

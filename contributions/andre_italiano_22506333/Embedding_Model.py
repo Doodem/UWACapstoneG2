@@ -20,6 +20,7 @@ import torch.nn.functional as F
 from transformers import BertTokenizer, LongformerTokenizer
 from bs4 import BeautifulSoup
 from numpy.linalg import norm
+from nltk import tokenize
 
 #  model class 
 
@@ -49,27 +50,37 @@ class Pretrained_model(nn.Module):
             
             return pooled_output.last_hidden_state[:,0]
         
-        if self.model_base = "google/bigbird-roberta-base":
+        elif self.model_base == "google/bigbird-roberta-base":
             global_attention_mask = [1].extend([0]*input_ids.shape[-1])
             pooled_output = self.embedding_model(input_ids=input_ids,attention_mask=attention_mask,token_type_ids=token_type_ids)
             
             return pooled_output.last_hidden_state[:,0]
+        else:
         
-        pooled_output = self.embedding_model(input_ids=input_ids,attention_mask=attention_mask,token_type_ids=token_type_ids)        
-        cls_token = pooled_output.last_hidden_state
-        cls_token = cls_token[0][0]
-        cls_token = cls_token.unsqueeze(0)
-        return cls_token
+            pooled_output = self.embedding_model(input_ids=input_ids,attention_mask=attention_mask,token_type_ids=token_type_ids)        
+            cls_token = pooled_output.last_hidden_state
+            cls_token = cls_token[0][0]
+            cls_token = cls_token.unsqueeze(0)
+            return cls_token
+   
     
 
 
 def preprocess_and_forward(data,text_processor,model):
-    x = text_processor.preprocess_text(data)
+    sentence_embeddings = []
+    processed_item = text_processor.tokenize_sentence(data)
+    for sentence in processed_item:
+        x = text_processor.preprocess_text(sentence)
+
+        with torch.no_grad():               
+            sentence_embeddings.append(model(x['input_ids'],x['attention_mask'],x['token_type_ids']).numpy()[0])
+            
     
-    with torch.no_grad():
-        cls_token = model(x['input_ids'],x['attention_mask'],x['token_type_ids'])
+    # Sum sentence embeddings
+    sum_embeddings = np.sum(sentence_embeddings, axis=0)
+    average_embeddings = sum_embeddings/len(processed_item)
     
-    return cls_token
+    return average_embeddings
 
 def cosine_sim(A,B):
     return np.dot(A,B)/(norm(A)*norm(B))
@@ -84,6 +95,7 @@ def bert_preprocessing(text):
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased',model_max_length=512)
     
     return tokenizer(text = text,return_tensors = 'pt',truncation=True)
+
 
     
 contraction_dict = {"ain't": "is not", "aren't": "are not","can't": "cannot", "'cause": "because", "could've": "could have", 
@@ -153,3 +165,5 @@ class Textprocessor:
         for item in text_tokenized:
             text = text + " " + item
         return text 
+    def tokenize_sentence(self,doc):
+        return tokenize.sent_tokenize(doc)
