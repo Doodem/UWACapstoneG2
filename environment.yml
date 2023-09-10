@@ -2,6 +2,11 @@ name: capstone
 channels:
   - defaults
 dependencies:
-  - jupyter
-  - gensim
   - pytorch
+  - gensim
+  - jupyter
+  - pandas
+  - transformers
+  - nltk
+  - openpyxl
+  - python-docx
