@@ -25,9 +25,12 @@ from nltk import tokenize
 #  model class 
 
 class Pretrained_model(nn.Module):
-    def __init__(self,model='bert'):
+    def __init__(self,custom_model,model='bert'):
         super(Pretrained_model,self).__init__()
         
+        if model.lower() == 'custom':
+            self.bert_config = BertConfig.from_pretrained('bert-base-uncased',output_hidden_states=True)
+            self.embedding_model = BertModel.from_pretrained(custom_model,config=self.bert_config)
         if model.lower() =='bert':
             self.bert_config = BertConfig.from_pretrained('bert-base-uncased',output_hidden_states=True)
             self.embedding_model = BertModel.from_pretrained('bert-base-uncased',config=self.bert_config)
