@@ -71,15 +71,28 @@ def remove_html_tags(text):
 
 # insert all read functions here per file type
 
-def read_doc(doc_file):
-    # extract text from doc
-    doc_data = doc_file
-    return doc_data
+from docx import Document
 
-def read_pdf(pdf_file):
-    # extract text from pdf
-    pdf_data = pdf_file
-    return pdf_data
+def read_doc(doc_file_path):
+    #extract text from doc
+    doc = Document(docx_path)
+    content = []
+
+    for paragraph in doc.paragraphs:
+        content.append(paragraph.text)
+
+    return "\n".join(content)
+
+import PyPDF2
+def read_pdf(pdf_file_path):
+    #extract text from pdf
+    text = ""
+    with open(pdf_path, "rb") as pdf_file:
+        pdf_reader = PyPDF2.PdfReader(pdf_file)
+        for page_number in range(len(pdf_reader.pages)):
+            page = pdf_reader.pages[page_number]
+            text += page.extract_text()
+    return text
 
 def ocr(image_file):
     # extract text from image
