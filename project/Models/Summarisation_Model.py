@@ -1,6 +1,7 @@
 import zipfile
 import os
 import pandas as pd
+from bs4 import BeautifulSoup
 
 def list_files(current_zip, corpus, zip_file, full_path):
     for file_info in zip_file.infolist():
@@ -51,7 +52,7 @@ def add_base(corpus, tenders_data):
     for index, row in tenders_data.iterrows():
         ref = row["Reference Number"]
         title = row["Contract Title"]
-        desc = row["Description"]
+        desc = remove_html_tags(row["Description"])
 
         combined = f"{title}. {desc}"
         add(corpus, ref, combined)
@@ -61,6 +62,12 @@ def add(corpus, current_zip, data):
         corpus[current_zip].append(data)
     else:
         corpus[current_zip] = [data]
+
+def remove_html_tags(text):
+    soup = BeautifulSoup(text, "html.parser")
+    cleaned = soup.get_text().replace('\xa0', ' ')
+    cleaned = ' '.join(cleaned.split())
+    return cleaned
 
 # insert all read functions here per file type
 
