@@ -75,7 +75,7 @@ from docx import Document
 
 def read_doc(doc_file_path):
     #extract text from doc
-    doc = Document(docx_path)
+    doc = Document(doc_file_path)
     content = []
 
     for paragraph in doc.paragraphs:
@@ -87,7 +87,7 @@ import PyPDF2
 def read_pdf(pdf_file_path):
     #extract text from pdf
     text = ""
-    with open(pdf_path, "rb") as pdf_file:
+    with open(pdf_file_path, "rb") as pdf_file:
         pdf_reader = PyPDF2.PdfReader(pdf_file)
         for page_number in range(len(pdf_reader.pages)):
             page = pdf_reader.pages[page_number]
@@ -124,3 +124,4 @@ corpus = main(tenders_data_path, search_path)
 #    print("<=============>")
 
 print(corpus['BMW0104219'])
+
