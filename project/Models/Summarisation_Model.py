@@ -2,10 +2,12 @@ import zipfile
 import os
 import pandas as pd
 from bs4 import BeautifulSoup
+import PyPDF2
+from io import BytesIO    
 
 def list_files(ref, corpus, zip_file, full_path):
     for file_info in zip_file.infolist():
-        file_name = os.path.join(full_path, file_info.filename)
+        file_name = os.path.join(full_path, file_info.filename).replace('/', '\\')
 
         if file_name.lower().endswith(('doc', 'docx')):
             # read doc function
@@ -82,16 +84,18 @@ def read_doc(doc_file_path):
         content.append(paragraph.text)
 
     return "\n".join(content)
-
-import PyPDF2
+    
 def read_pdf(pdf_file_path):
     #extract text from pdf
+    zip_file_path, pdf_file = os.path.split(pdf_file_path)
+    
     text = ""
-    with open(pdf_file_path, "rb") as pdf_file:
-        pdf_reader = PyPDF2.PdfReader(pdf_file)
+    with zipfile.ZipFile(zip_file_path, 'r') as zip_file:
+        pdf_reader = PyPDF2.PdfReader(BytesIO(zip_file.read(pdf_file))) 
         for page_number in range(len(pdf_reader.pages)):
             page = pdf_reader.pages[page_number]
             text += page.extract_text()
+    print(text)
     return text
 
 def ocr(image_file):
