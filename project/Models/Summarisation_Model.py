@@ -4,6 +4,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import PyPDF2
 from io import BytesIO    
+from docx import Document
 
 def list_files(ref, corpus, zip_file, full_path):
     for file_info in zip_file.infolist():
@@ -14,10 +15,10 @@ def list_files(ref, corpus, zip_file, full_path):
             doc_data = read_doc(file_name)
             add(corpus, ref, doc_data)
 
-        elif file_name.lower().endswith('pdf'):
+        #elif file_name.lower().endswith('pdf'):
            # read pdf function
-           pdf_data = read_pdf(file_name)
-           add(corpus, ref, pdf_data)
+        #   pdf_data = read_pdf(file_name)
+        #   add(corpus, ref, pdf_data)
                  
         elif file_name.lower().endswith(('jpg', 'png')):
             # ocr function
@@ -73,17 +74,21 @@ def remove_html_tags(text):
 
 # insert all read functions here per file type
 
-from docx import Document
-
-def read_doc(doc_file_path):
+def read_doc(docx_file_path):
     #extract text from doc
-    doc = Document(doc_file_path)
+    zip_file_path, docx_file = os.path.split(docx_file_path)
+
+    with zipfile.ZipFile(zip_file_path, 'r') as zip_file:
+        docx_content = zip_file.read(docx_file)
+
+    doc = Document(BytesIO(docx_content))
     content = []
 
     for paragraph in doc.paragraphs:
         content.append(paragraph.text)
 
-    return "\n".join(content)
+    text = "\n".join(content)
+    return text
     
 def read_pdf(pdf_file_path):
     #extract text from pdf
@@ -95,7 +100,6 @@ def read_pdf(pdf_file_path):
         for page_number in range(len(pdf_reader.pages)):
             page = pdf_reader.pages[page_number]
             text += page.extract_text()
-    print(text)
     return text
 
 def ocr(image_file):
