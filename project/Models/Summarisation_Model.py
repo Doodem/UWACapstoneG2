@@ -17,7 +17,7 @@ from tqdm import tqdm
 
 docs_total = 0
 doc_read_failure = 0
-def read_doc(file_bytes, zip_file, nested_file_name):
+def read_doc(file_bytes):
     global docs_total
     global doc_read_failure
     
@@ -58,9 +58,11 @@ def read_doc(file_bytes, zip_file, nested_file_name):
         return content
     else: # nothing worked, so just report a doc read failure
         doc_read_failure += 1
+        return content
         
 def read_pdf(file_bytes):
     text = ""
+    
     pdf_reader = PyPDF2.PdfReader(io.BytesIO(file_bytes))
     for page_number in range(len(pdf_reader.pages)):
         page = pdf_reader.pages[page_number]
@@ -78,11 +80,11 @@ def file_handler(ref, corpus, zip_file, nested_file_name):
     try:
         nested_file_bytes = zip_file.read(nested_file_name)
         if nested_file_name.lower().endswith(('doc', 'docx')):
-            doc_data = read_doc(nested_file_bytes, zip_file, nested_file_name)
-            add(corpus, ref, doc_data)
+            doc_data = read_doc(nested_file_bytes)
+            corpus.add(ref, nested_file_name, doc_data)
         elif nested_file_name.lower().endswith("pdf"):
             pdf_data = read_pdf(nested_file_bytes)
-            add(corpus, ref, pdf_data)
+            corpus.add(ref, nested_file_name, pdf_data)
     except BadZipFile as badZipException:
         bad_zips += 1
 
@@ -103,6 +105,7 @@ def zip_search(ref, corpus, zip_path, zip_data):
                 file_handler(ref, corpus, zip_file, nested_file_name)
 
 def rec_search(corpus, directory_path):
+    file_c = 0
     for root, _, files in os.walk(directory_path):
         zips_len = len(files)
         with tqdm(total = zips_len, desc="Processing files", colour='green') as pbar:
@@ -113,21 +116,38 @@ def rec_search(corpus, directory_path):
                     ref = parts[-1].split("-specification.zip")[0]
                     zip_search(ref, corpus, file_path, file_path)
                 pbar.update(1)
+                file_c += 1
+                if file_c > 5:
+                    break
 
-def add_base(corpus, tenders_data):
-    for index, row in tenders_data.iterrows():
-        ref = str(row["Reference Number"])
-        title = row["Contract Title"]
-        desc = remove_html_tags(row["Description"])
-
-        combined = f"{title}. {desc}"
-        add(corpus, ref, combined)
-
-def add(corpus, ref, data):
-    if ref in corpus:
-        corpus[ref].append(data)
-    else:
-        corpus[ref] = [data]
+class Corpus:
+    def __init__(self):
+        self.reference_map = {}
+    
+    def clean_text(self, text):
+    # convert from binary string if needed
+        if type(text) == bytes:
+            text = text.decode("utf-8")
+        text = re.sub("[^a-zA-z0-9.,]", " ", text)
+        text = re.sub("\\\\", " ", text) 
+        text = re.sub("\s+", " ", text)
+        text = re.sub("\.+", ".", text)
+        return text
+        
+    def add(self, reference, file_name, content):
+        if content == None:
+            print(f"Warning: None content for ref:{reference}, fname:{file_name}")
+        else:
+            content = self.clean_text(content)
+            
+        if reference in self.reference_map:
+            if file_name in self.reference_map:
+                # hopefully wont happen
+                print(f"Warning: duplicate file name added for ref:{reference} fname:{file_name}")
+            else:
+                self.reference_map[reference][file_name] = content
+        else:
+            self.reference_map[reference] = {file_name: content}
 
 def remove_html_tags(text):
     soup = BeautifulSoup(text, "html.parser")
@@ -135,34 +155,26 @@ def remove_html_tags(text):
     cleaned = ' '.join(cleaned.split())
     return cleaned
 
+def process_base(corpus, tenders_data):
+    for index, row in tenders_data.iterrows():
+        ref = str(row["Reference Number"])
+        title = row["Contract Title"]
+        desc = remove_html_tags(row["Description"])
 
-def clean_text(text):
-    # convert from binary string if needed
-    if type(text) == bytes:
-        text = text.decode("utf-8")
-    text = re.sub("[^a-zA-z0-9.,]", " ", text)
-    text = re.sub("\\\\", " ", text) 
-    text = re.sub("\s+", " ", text)
-    text = re.sub("\.+", ".", text)
-    return text
-
-def clean_corpus_dict(corpus):
-    for key in corpus:
-        corpus[key] = [clean_text(text) for text in corpus[key]]
+        corpus.add(ref, "TITLE", title)
+        corpus.add(ref, "DESCRIPTION", desc)
 
 def main(tenders_data_path, search_path):
-    corpus = {}
+    corpus = Corpus()
 
-    tenders_data = pd.read_excel(tenders_data_path)
-    tenders_data = tenders_data[["Reference Number", "Contract Title", "Description"]].dropna(subset=["Reference Number"]).drop_duplicates()
+    #tenders_data = pd.read_excel(tenders_data_path)
+    #tenders_data = tenders_data[["Reference Number", "Contract Title", "Description"]].dropna(subset=["Reference Number"]).drop_duplicates()
 
     # add title and short description as base data
-    add_base(corpus, tenders_data)
+    #process_base(corpus, tenders_data)
 
     # get available extra information from specification documents
     rec_search(corpus, search_path)
-
-    clean_corpus_dict(corpus)
     
     return corpus
 
@@ -171,11 +183,9 @@ tenders_data_path = r"/Users/max/Documents/CapStone/UWACapstoneG2/data/UpdatedAg
 search_path = r"/Users/max/Documents/CapStone/data/tenders/"
 
 corpus = main(tenders_data_path, search_path)
-#for key, value in corpus.items():
+#for key, value in corpus.reference_map.items():
 #    print(f"{key}: {value}")
-#    print(type(value))
 #    print("<=============>")
-#    break
     
 print(docs_total)
 print(doc_read_failure)
