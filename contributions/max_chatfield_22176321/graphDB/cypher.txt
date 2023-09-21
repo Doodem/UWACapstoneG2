@@ -1,0 +1,14 @@
+LOAD CSV WITH HEADERS FROM 'file:///tenders.csv' AS row CREATE (tender:Tender {id: row["graphID"], description: row["CleanedDescription"], title: row["Contract Title"]})
+
+# took about 10m with 24k rows....
+LOAD CSV WITH HEADERS FROM 'file:///tenders.csv' AS row 
+MATCH (tender: Tender {id: row["graphID"]}) 
+MATCH (top_tender: Tender {id: row["top_sim_1"]})
+MERGE (tender)-[:top_sim_1]->(top_tender)
+
+MATCH (n)
+OPTIONAL MATCH (n)-[r]-()
+WITH n,r LIMIT 50000
+DELETE n,r
+RETURN count(n) as deletedNodesCount
+
