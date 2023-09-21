@@ -10,3 +10,4 @@ dependencies:
   - nltk
   - openpyxl
   - python-docx
+  - scikit-learn
