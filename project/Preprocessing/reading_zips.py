@@ -12,6 +12,8 @@ from pathlib import Path
 import textract
 import re
 from tqdm import tqdm
+import pickle
+from concurrent.futures import ProcessPoolExecutor
 
 # READ FUNCTIONS GO HERE 
 
@@ -75,22 +77,22 @@ def ocr(image_file):
     return image_data
 
 bad_zips = 0
-def file_handler(ref, corpus, zip_file, nested_file_name):
+def file_handler(tender, zip_file, nested_file_name):
     global bad_zips
     try:
         nested_file_bytes = zip_file.read(nested_file_name)
         if nested_file_name.lower().endswith(('doc', 'docx')):
             doc_data = read_doc(nested_file_bytes)
-            corpus.add(ref, nested_file_name, doc_data)
+            tender.add(nested_file_name, doc_data)
         elif nested_file_name.lower().endswith("pdf"):
             pdf_data = read_pdf(nested_file_bytes)
-            corpus.add(ref, nested_file_name, pdf_data)
+            tender.add(nested_file_name, pdf_data)
     except BadZipFile as badZipException:
         bad_zips += 1
 
 # ----------------------
 
-def zip_search(ref, corpus, zip_path, zip_data):
+def zip_search(tender, zip_path, zip_data):
     with zipfile.ZipFile(zip_data, 'r') as zip_file:
         for file_info in zip_file.infolist():
             nested_file_name = file_info.filename
@@ -98,32 +100,44 @@ def zip_search(ref, corpus, zip_path, zip_data):
                 try:
                     nested_zip_data = io.BytesIO(zip_file.open(nested_file_name).read())
                     nested_zip_path = os.path.join(zip_path, nested_file_name)
-                    zip_search(ref, corpus, nested_zip_path, nested_zip_data)
+                    zip_search(tender, nested_zip_path, nested_zip_data)
                 except BadZipFile as badZipException:
                     bad_zips += 1
             else:
-                file_handler(ref, corpus, zip_file, nested_file_name)
+                file_handler(tender, zip_file, nested_file_name)
 
-def rec_search(corpus, directory_path):
-    file_c = 0
+def begin_thread_zip_task(ref, file_path):
+    tender = Tender(ref)
+    zip_search(tender, file_path, file_path)
+    # save the file
+    print(f"saving {ref} ...")
+    tender.save()
+    print("saved!")     
+                        
+def rec_search(directory_path):
     for root, _, files in os.walk(directory_path):
         zips_len = len(files)
-        with tqdm(total = zips_len, desc="Processing files", colour='green') as pbar:
+        with ProcessPoolExecutor() as executor:  
+            futures = []
             for file in files:  
                 file_path = os.path.join(root, file)
                 if file_path.endswith('.zip'):
                     parts = file_path.split(os.path.sep)
                     ref = parts[-1].split("-specification.zip")[0]
-                    zip_search(ref, corpus, file_path, file_path)
-                pbar.update(1)
-                file_c += 1
-                if file_c > 5:
-                    break
+                    # check at this stage if there is already a pickle file
+                    # if there is, skip doing any reading!!
+                    if not Tender.exists(ref):
+                        future = executor.submit(begin_thread_zip_task, ref, file_path)
+                        futures.append(future)
+            with tqdm(total=zips_len, desc="Reading tenders", colour='green') as pbar: 
+                for future in concurrent.futures.as_completed(futures):
+                    pbar.update(1)
 
-class Corpus:
-    def __init__(self):
-        self.reference_map = {}
-    
+class Tender:
+    def __init__(self, reference):
+        self.reference = reference
+        self.file_map = {}
+        
     def clean_text(self, text):
     # convert from binary string if needed
         if type(text) == bytes:
@@ -132,22 +146,35 @@ class Corpus:
         text = re.sub("\\\\", " ", text) 
         text = re.sub("\s+", " ", text)
         text = re.sub("\.+", ".", text)
-        return text
-        
-    def add(self, reference, file_name, content):
+        return text   
+    
+    def add(self, file_name, content):
         if content == None:
-            print(f"Warning: None content for ref:{reference}, fname:{file_name}")
+            print(f"Warning: None content for ref:{self.reference}, fname:{file_name}")
         else:
             content = self.clean_text(content)
             
-        if reference in self.reference_map:
-            if file_name in self.reference_map:
-                # hopefully wont happen
-                print(f"Warning: duplicate file name added for ref:{reference} fname:{file_name}")
-            else:
-                self.reference_map[reference][file_name] = content
+        if file_name in self.file_map:
+            # hopefully wont happen
+            print(f"Warning: duplicate file name added for ref:{reference} fname:{file_name}")
         else:
-            self.reference_map[reference] = {file_name: content}
+            self.file_map[file_name] = content
+    
+    def save(self):
+        with open(f"{self.reference}.pickle", 'wb') as file_handle:
+            pickle.dump(self.file_map, file_handle, protocol=pickle.HIGHEST_PROTOCOL)
+            
+    @staticmethod
+    def exists(reference):
+        return os.path.exists(f"{reference}.pickle")
+    
+    @staticmethod
+    def load(reference):
+        if Tender.exists(reference):
+            with open(f"{reference}.pickle", 'rb') as file_handle:
+                return pickle.load(file_handle)
+        else:
+            return None
 
 def remove_html_tags(text):
     soup = BeautifulSoup(text, "html.parser")
@@ -165,27 +192,20 @@ def process_base(corpus, tenders_data):
         corpus.add(ref, "DESCRIPTION", desc)
 
 def main(tenders_data_path, search_path):
-    corpus = Corpus()
-
+    # get available extra information from specification documents
+    rec_search(search_path)
+    
     #tenders_data = pd.read_excel(tenders_data_path)
     #tenders_data = tenders_data[["Reference Number", "Contract Title", "Description"]].dropna(subset=["Reference Number"]).drop_duplicates()
 
     # add title and short description as base data
-    #process_base(corpus, tenders_data)
-
-    # get available extra information from specification documents
-    rec_search(corpus, search_path)
-    
-    return corpus
+    #process_base(tenders_data)
 
 # folder with zip files, not Tenders.zip
-tenders_data_path = r"/Users/max/Documents/CapStone/UWACapstoneG2/data/UpdatedAgainTenders.xlsx"
-search_path = r"/Users/max/Documents/CapStone/data/tenders/"
+tenders_data_path = r"~/Capstone/UWACapstoneG2/data/UpdatedAgainTenders.xlsx"
+search_path = r"/home/ucc/maxichat/Capstone/Tenders/Tenders/"
 
-corpus = main(tenders_data_path, search_path)
-#for key, value in corpus.reference_map.items():
-#    print(f"{key}: {value}")
-#    print("<=============>")
+main(tenders_data_path, search_path)
     
 print(docs_total)
 print(doc_read_failure)
