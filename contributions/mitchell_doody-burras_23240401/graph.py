@@ -2,6 +2,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics.pairwise import cosine_similarity
+from scipy.spatial import distance_matrix as scipy_distance_matrix
 
 class GraphDB:
     
@@ -9,6 +10,7 @@ class GraphDB:
         """ Build queryable graph """
         self.references = list(data.keys())
         self.similarity_matrix = self.compute_similarity_matrix(data)
+        self.distance_matrix = self.compute_distance_matrix(data)
     
     def compute_similarity_matrix(self, data):
         """
@@ -18,7 +20,13 @@ class GraphDB:
         return cosine_similarity(embeddings_matrix)
     
     def compute_distance_matrix(self, data):
-            pass
+        """
+        Returns: Computed distance matrix
+        """
+        num_references = len(self.references)
+        locations = [data[ref]["location"] for ref in self.references]
+        dist_matrix = scipy_distance_matrix(locations, locations)
+        return dist_matrix
     
     def closest(self, query, n):
         """
