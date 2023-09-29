@@ -28,17 +28,18 @@ class GraphDB:
         dist_matrix = scipy_distance_matrix(locations, locations)
         return dist_matrix
     
-    def closest(self, query, n):
+    def closest(self, query, n, max_distance):
         """
-        Returns: Top n most similar tenders to query
+        Returns: Top n most similar tenders to query within distance
         """
         ref = self.references.index(query)
         similarity = self.similarity_matrix[ref]
         similarity_sort = np.argsort(similarity)
-        closest = similarity_sort[-n:]
-        return self.subset_graph(ref, closest, similarity)
+        within_distance = [idx for idx in similarity_sort if self.distance_matrix[ref, idx] <= max_distance]
+        closest = within_distance[-n:]
+        return self.make_graph(ref, closest, similarity)
         
-    def subset_graph(self, ref, closest, similarity):
+    def make_graph(self, ref, closest, similarity):
         """
         Returns: Subgraph of query node amongst closest nodes with similarity on edges
         """
