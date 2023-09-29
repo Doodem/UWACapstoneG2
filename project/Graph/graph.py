@@ -2,6 +2,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics.pairwise import cosine_similarity
+from scipy.spatial import distance_matrix as scipy_distance_matrix
 
 class GraphDB:
     
@@ -9,6 +10,7 @@ class GraphDB:
         """ Build queryable graph """
         self.references = list(data.keys())
         self.similarity_matrix = self.compute_similarity_matrix(data)
+        self.distance_matrix = self.compute_distance_matrix(data)
     
     def compute_similarity_matrix(self, data):
         """
@@ -18,19 +20,26 @@ class GraphDB:
         return cosine_similarity(embeddings_matrix)
     
     def compute_distance_matrix(self, data):
-            pass
-    
-    def closest(self, query, n):
         """
-        Returns: Top n most similar tenders to query
+        Returns: Computed distance matrix
+        """
+        num_references = len(self.references)
+        locations = [data[ref]["location"] for ref in self.references]
+        dist_matrix = scipy_distance_matrix(locations, locations)
+        return dist_matrix
+    
+    def closest(self, query, n, max_distance):
+        """
+        Returns: Top n most similar tenders to query within distance
         """
         ref = self.references.index(query)
         similarity = self.similarity_matrix[ref]
         similarity_sort = np.argsort(similarity)
-        closest = similarity_sort[-n:]
-        return self.subset_graph(ref, closest, similarity)
+        within_distance = [idx for idx in similarity_sort if self.distance_matrix[ref, idx] <= max_distance]
+        closest = within_distance[-n:]
+        return self.make_graph(ref, closest, similarity)
         
-    def subset_graph(self, ref, closest, similarity):
+    def make_graph(self, ref, closest, similarity):
         """
         Returns: Subgraph of query node amongst closest nodes with similarity on edges
         """
