@@ -2,6 +2,7 @@
 import pandas as pd
 from torch import nn
 from transformers import BertTokenizer, BertModel, BigBirdModel, LongformerModel , BertConfig,BigBirdTokenizer
+from sentence_transformers import SentenceTransformer, util
 import numpy as np
 import math
 import gensim.downloader as api
@@ -22,15 +23,13 @@ from bs4 import BeautifulSoup
 from numpy.linalg import norm
 from nltk import tokenize
 
+
 #  model class 
 
 class Pretrained_model(nn.Module):
-    def __init__(self,custom_model,model='bert'):
+    def __init__(self,model='bert'):
         super(Pretrained_model,self).__init__()
         
-        if model.lower() == 'custom':
-            self.bert_config = BertConfig.from_pretrained('bert-base-uncased',output_hidden_states=True)
-            self.embedding_model = BertModel.from_pretrained(custom_model,config=self.bert_config)
         if model.lower() =='bert':
             self.bert_config = BertConfig.from_pretrained('bert-base-uncased',output_hidden_states=True)
             self.embedding_model = BertModel.from_pretrained('bert-base-uncased',config=self.bert_config)
@@ -66,7 +65,31 @@ class Pretrained_model(nn.Module):
             cls_token = cls_token.unsqueeze(0)
             return cls_token
    
+
+
+
+class Sentence_transformer(nn.Module):
     
+    '''
+    for sentence transformer, only use the tokenize function from the TextProcessor class, does not require full preprocessing 
+    '''
+    
+    
+    def __init__(self):
+        super(Sentence_transformer,self).__init__()
+        self.model_type = 'all-mpnet-base-v2'
+        self.model = SentenceTransformer('all-mpnet-base-v2')
+        
+    def forward(self,input_text):
+        if type(input_text) == list:
+            temp = []
+            for item in input_text:
+                temp.append(self.model.encode(input_text))
+            sum_embeddings = np.sum(temp, axis=0)
+            outputs = sum_embeddings/len(temp)
+            return outputs
+        else:
+            return self.mode.encode(input_text)
 
 
 def preprocess_and_forward(data,text_processor,model):
