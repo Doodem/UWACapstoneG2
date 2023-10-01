@@ -63,4 +63,6 @@ class GraphDB:
         labels = {node: node for node in G.nodes()}  
         nx.draw(G, pos, with_labels=True, labels=labels, node_color='lightblue', node_size=800)
         edge_labels = nx.get_edge_attributes(G, 'similarity')
+        nx.set_node_attributes(G, pos, "location")
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+        return G
