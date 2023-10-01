@@ -8,6 +8,7 @@ class GraphDB:
     
     def __init__(self, data):
         """ Build queryable graph """
+        self.data = data
         self.references = list(data.keys())
         self.similarity_matrix = self.compute_similarity_matrix(data)
         self.distance_matrix = self.compute_distance_matrix(data)
@@ -37,19 +38,20 @@ class GraphDB:
         similarity_sort = np.argsort(similarity)
         within_distance = [idx for idx in similarity_sort if self.distance_matrix[ref, idx] <= max_distance]
         closest = within_distance[-n:]
-        return self.make_graph(ref, closest, similarity)
+        return self.make_graph(query, closest, similarity)
         
-    def make_graph(self, ref, closest, similarity):
+    def make_graph(self, query, closest, similarity):
         """
         Returns: Subgraph of query node amongst closest nodes with similarity on edges
         """
         G = nx.Graph() 
-        G.add_node(ref)
+        G.add_node(query)
 
         for i, idx in enumerate(closest):
             closest_node = self.references[idx]
             similarity_value = similarity[i]
-            G.add_edge(ref, closest_node, similarity=round(similarity_value, 2))
+            if closest_node != query:
+                G.add_edge(query, closest_node, similarity=round(similarity_value, 2))
 
         return G
 
@@ -57,7 +59,7 @@ class GraphDB:
         """
         Returns: Draws the graph
         """
-        pos = nx.spring_layout(G)
+        pos = {ref: self.data[ref]["location"] for ref in G.nodes()}
         labels = {node: node for node in G.nodes()}  
         nx.draw(G, pos, with_labels=True, labels=labels, node_color='lightblue', node_size=800)
         edge_labels = nx.get_edge_attributes(G, 'similarity')
