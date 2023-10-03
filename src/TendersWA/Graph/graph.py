@@ -63,8 +63,13 @@ class GraphDB:
         """
         pos = {ref: self.data[ref]["location"] for ref in G.nodes()}
         labels = {node: node for node in G.nodes()}  
-        nx.draw(G, pos, with_labels=True, labels=labels, node_color='lightblue', node_size=800)
+        G_plot = G.copy()
+        nx.draw(G_plot, with_labels=True, labels=labels, node_color='lightblue', node_size=800,font_size=8)
+        layout = nx.spring_layout(G)
         edge_labels = nx.get_edge_attributes(G, 'similarity')
         nx.set_node_attributes(G, pos, "location")
-        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+        nx.draw_networkx_edge_labels(G_plot, pos=layout,edge_labels=edge_labels)
+        
+        plt.show()
+        
         return G
