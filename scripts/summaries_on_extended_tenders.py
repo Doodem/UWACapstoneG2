@@ -31,11 +31,11 @@ def process_tenders(pickle_files):
         if tender != None and len(tender.file_map.keys()) > 2 and not os.path.exists(sum_file):
             clean_tender(tender)
             summary, relevant, short_desc = summariser.summarise_tender(tender)
-            summary_result = {"summary": summary, "relevant": relevant, "short_desc": short_desc}
-            with open(sum_file, "wb") as f:
-                pickle.dump(summary_result, f)
+            if summary != "": # empty summary means something went wrong. Dont record
+                summary_result = {"summary": summary, "relevant": relevant, "short_desc": short_desc}
+                with open(sum_file, "wb") as f:
+                    pickle.dump(summary_result, f)
+            else:
+                return
         
-# maltair - [0-1060)
-# machop - [1060-2121)
-# acer - [2121-3182)
-process_tenders(extended_pickles[1060:2121])
+process_tenders()
