@@ -33,8 +33,6 @@ def process_tenders(pickle_files):
             summary_result = {"summary": summary, "relevant": relevant, "short_desc": short_desc}
             with open(sum_file, "wb") as f:
                 pickle.dump(summary_result, f)
-            return
-
         
 # maltair - [0-1060)
 # machop - [1060-2121)
