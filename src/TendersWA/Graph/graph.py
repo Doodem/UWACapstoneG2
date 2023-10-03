@@ -46,10 +46,12 @@ class GraphDB:
         """
         G = nx.Graph() 
         G.add_node(query)
-
+        
         for i, idx in enumerate(closest):
             closest_node = self.references[idx]
-            similarity_value = similarity[i]
+            
+            similarity_value = similarity[idx]
+            
             if closest_node != query:
                 G.add_edge(query, closest_node, similarity=round(similarity_value, 2))
 
