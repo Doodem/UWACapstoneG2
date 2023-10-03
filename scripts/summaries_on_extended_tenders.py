@@ -5,10 +5,11 @@ import os
 
 import re
 def clean(content):
-    content = re.sub("[^a-zA-Z.,]", " ", content)
-    content = re.sub("_", " ", content)
-    content = re.sub("\s+", " ", content)
-    return content
+    if content != None:
+        content = re.sub("[^a-zA-Z.,]", " ", content)
+        content = re.sub("_", " ", content)
+        content = re.sub("\s+", " ", content)
+        return content
 
 def clean_tender(tender):
     for key in tender.file_map.keys():
@@ -37,4 +38,4 @@ def process_tenders(pickle_files):
 # maltair - [0-1060)
 # machop - [1060-2121)
 # acer - [2121-3182)
-process_tenders(extended_pickles[0:1060])
+process_tenders(extended_pickles[1060:2121])
