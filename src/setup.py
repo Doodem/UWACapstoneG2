@@ -6,5 +6,5 @@ setup(
         version="0.1.0",
         description="TendersWA python library for NLP applications",
         author="Max Chatfield, Limin Deng, Mitchell Doody-Burras, Joyce Ye, Andre Italiano, Enam Shaikh",
-        install_requires=["networkx"]
+        install_requires=[]
 )

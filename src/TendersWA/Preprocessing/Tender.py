@@ -11,7 +11,7 @@ class Tender:
     # convert from binary string if needed
         if type(text) == bytes:
             text = text.decode("utf-8")
-        text = re.sub("[^a-zA-z0-9.,]", " ", text)
+        text = re.sub("[^a-zA-Z0-9.,]", " ", text)
         text = re.sub("\\\\", " ", text) 
         text = re.sub("\s+", " ", text)
         text = re.sub("\.+", ".", text)
