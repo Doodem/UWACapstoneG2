@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial import distance_matrix as scipy_distance_matrix
+import pandas as pd
 
 class GraphDB:
     
@@ -29,15 +30,24 @@ class GraphDB:
         dist_matrix = scipy_distance_matrix(locations, locations)
         return dist_matrix
     
-    def closest(self, query, n, max_distance):
+    def closest(self, query, n, max_distance,date1,date2):
         """
-        Returns: Top n most similar tenders to query within distance
+        Returns: Top n most similar tenders to query within distance and time
         """
         ref = self.references.index(query)
         similarity = self.similarity_matrix[ref]
         similarity_sort = np.argsort(similarity)
         within_distance = [idx for idx in similarity_sort if self.distance_matrix[ref, idx] <= max_distance]
-        closest = within_distance[-n:]
+        within_date = []
+        for item in within_distance:
+            temp_ref = self.references[item]
+            if self.data[temp_ref]['expire_date'] > date1 and self.data[temp_ref]['expire_date'] < date2:
+                within_date.append(item)
+            elif pd.isnull(self.data[temp_ref]['expire_date']):
+                within_date.append(item)
+                
+        
+        closest = within_date[-n:]
         return self.make_graph(query, closest, similarity)
         
     def make_graph(self, query, closest, similarity):
