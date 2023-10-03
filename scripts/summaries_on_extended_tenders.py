@@ -38,4 +38,4 @@ def process_tenders(pickle_files):
             else:
                 return
         
-process_tenders()
+process_tenders(extended_pickles)
