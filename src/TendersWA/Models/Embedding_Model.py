@@ -89,7 +89,7 @@ class Sentence_transformer(nn.Module):
             outputs = sum_embeddings/len(temp)
             return outputs
         else:
-            return self.mode.encode(input_text)
+            return self.model.encode(input_text)
 
 
 def preprocess_and_forward(data,text_processor,model):
