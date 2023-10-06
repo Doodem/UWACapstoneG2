@@ -82,14 +82,15 @@ class Sentence_transformer(nn.Module):
         
     def forward(self,input_text):
         if type(input_text) == list:
+            print("okay")
             temp = []
             for item in input_text:
-                temp.append(self.model.encode(input_text))
+                temp.append(self.model.encode(item))
             sum_embeddings = np.sum(temp, axis=0)
             outputs = sum_embeddings/len(temp)
             return outputs
         else:
-            return self.mode.encode(input_text)
+            return self.model.encode(input_text)
 
 
 def preprocess_and_forward(data,text_processor,model):
