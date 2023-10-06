@@ -27,8 +27,9 @@ def process_tenders(pickle_files):
     for file in pickle_files:
         tender = Tender.load(file)
         # only process extended tenders and that a .sum file has not been generated
+        # a few didnt have descriptions, ignore them
         sum_file = os.path.join(save_dir, f"{tender.reference}.sum")
-        if tender != None and len(tender.file_map.keys()) > 2 and not os.path.exists(sum_file):
+        if tender != None and "DESCRIPTION" in tender.file_map and len(tender.file_map.keys()) > 2 and not os.path.exists(sum_file):
             clean_tender(tender)
             summary, relevant, short_desc = summariser.summarise_tender(tender)
             if summary != "": # empty summary means something went wrong. Dont record
