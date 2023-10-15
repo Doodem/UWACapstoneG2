@@ -1,4 +1,4 @@
-from Tender import Tender
+from TendersWA.Preprocessing.Tender import Tender
 import pandas as pd
 from bs4 import BeautifulSoup
 
@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 tenders_structured_path = r"~/Capstone/UWACapstoneG2/data/UpdatedAgainTenders.xlsx"
 
 tenders_structured = pd.read_excel(tenders_structured_path)
-tenders_structured = tenders_structured[["Reference Number", "Contract Title", "Description"]].dropna(subset=["Reference Number"]).drop_duplicates()
+tenders_structured = tenders_structured[["Reference Number", "Contract Title", "Description"]].dropna(subset=["Reference Number"]).drop_duplicates(subset=["Reference Number"])
 
 def remove_html_tags(text):
     soup = BeautifulSoup(text, "html.parser")

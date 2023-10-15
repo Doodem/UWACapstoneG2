@@ -1,5 +1,6 @@
-import NestedZip
-import Tender
+from TendersWA.Preprocessing.NestedZip import NestedZip
+from TendersWA.Preprocessing.Tender import Tender
+
 import io
 import os
 import tempfile
@@ -129,8 +130,9 @@ def main(tenders_data_path, search_path):
     # get available extra information from specification documents
     rec_search(search_path)
 
-# folder with zip files, not Tenders.zip
 tenders_data_path = r"~/Capstone/UWACapstoneG2/data/UpdatedAgainTenders.xlsx"
+
+# folder with zip files, not Tenders.zip
 search_path = r"/home/ucc/maxichat/Capstone/Tenders/Tenders/"
 
 main(tenders_data_path, search_path)
