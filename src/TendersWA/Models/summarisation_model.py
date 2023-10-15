@@ -22,7 +22,8 @@ class Summariser:
             trained = type
         else:
             trained = 'xsum'
-        self.summarizer = pipeline('summarization', model=f'facebook/bart-large-{trained}')
+        model_name = f'facebook/bart-large-{trained}'
+        self.summarizer = pipeline('summarization', model=model_name)
 
         self.max_length = max_length
         self.min_length = min_length
@@ -46,10 +47,14 @@ class Summariser:
         # If extra information exists
         if relevant_text:
             try:
-                summary = self.summarizer(relevant_text, max_length=self.max_length, min_length=self.min_length, do_sample=self.do_sample)
+                summary = self.summarizer(relevant_text, max_length=self.max_length, min_length=self.min_length, do_sample=self.do_sample, truncation=True)
                 summarized_text = summary[0]['summary_text']
-            except:
+            except Exception as e:
                 print(f"Document for '{tender.reference}' is most likely too long or something went wrong")
+                print()
+                print(relevant_text)
+                print()
+                print(e)
         
         return summarized_text, relevant_text, short_desc
     
