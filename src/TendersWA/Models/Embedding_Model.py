@@ -82,7 +82,6 @@ class Sentence_transformer(nn.Module):
         
     def forward(self,input_text):
         if type(input_text) == list:
-            print("okay")
             temp = []
             for item in input_text:
                 temp.append(self.model.encode(item))
