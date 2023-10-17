@@ -44,12 +44,21 @@ class GraphDB:
             if self.data[temp_ref]['expire_date'] > date1 and self.data[temp_ref]['expire_date'] < date2:
                 within_date.append(item)
             elif pd.isnull(self.data[temp_ref]['expire_date']):
-                within_date.append(item)
-                
+                within_date.append(item)                
         
         closest = within_date[-n:]
         return self.make_graph(query, closest, similarity)
-        
+    
+    def get_topics_graph(self,cluster):
+        tenders = []
+        for item in self.references:
+            
+            if str(self.data[item]['cluster']) == cluster:
+                tenders.append(item)
+        G = nx.Graph()
+        G.add_nodes_from(tenders)
+        return G
+    
     def make_graph(self, query, closest, similarity):
         """
         Returns: Subgraph of query node amongst closest nodes with similarity on edges
@@ -58,13 +67,10 @@ class GraphDB:
         G.add_node(query)
         
         for i, idx in enumerate(closest):
-            closest_node = self.references[idx]
-            
-            similarity_value = similarity[idx]
-            
+            closest_node = self.references[idx]            
+            similarity_value = similarity[idx]            
             if closest_node != query:
                 G.add_edge(query, closest_node, similarity=round(similarity_value, 2))
-
         return G
 
     def draw_graph(self, G):
@@ -81,5 +87,4 @@ class GraphDB:
         nx.draw_networkx_edge_labels(G_plot, pos=layout,edge_labels=edge_labels)
         
         plt.show()
-        
-        return G
+        return G   
