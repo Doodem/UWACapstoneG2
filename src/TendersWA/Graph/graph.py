@@ -38,6 +38,7 @@ class GraphDB:
         similarity = self.similarity_matrix[ref]
         similarity_sort = np.argsort(similarity)
         within_distance = [idx for idx in similarity_sort if self.distance_matrix[ref, idx] <= max_distance]
+        
         within_date = []
         for item in within_distance:
             temp_ref = self.references[item]
@@ -48,6 +49,42 @@ class GraphDB:
         
         closest = within_date[-n:]
         return self.make_graph(query, closest, similarity)
+    
+    
+    def get_neighbours(self,G,ref,neighbours,max_distance,date1,date2,n):
+        seen = [ref]
+        
+        if neighbours > 0:
+            for stage in range(neighbours):
+                
+                nodes_list = list(G.nodes())
+                
+                for item in nodes_list:
+                    if item in seen:
+                        continue
+                    seen.append(item)
+                    ref_idx = self.references.index(item)
+                    ref = self.references[ref_idx]
+                    similarity = self.similarity_matrix[ref_idx]
+                    similarity_sort = np.argsort(similarity)
+                    within_distance = [idx for idx in similarity_sort if self.distance_matrix[ref_idx, idx] <= max_distance]
+                    within_date = []
+                    for item in within_distance:
+                        temp_ref = self.references[item]
+                        if self.data[ref]['expire_date'] > date1 and self.data[ref]['expire_date'] < date2:
+                            within_date.append(item)
+                        elif pd.isnull(self.data[ref]['expire_date']):
+                            within_date.append(item) 
+                    closest = within_date[-n:]
+                    for i, idx in enumerate(closest):
+                        closest_node = self.references[idx]            
+                        similarity_value = similarity[idx]            
+                        if closest_node != ref:
+                            G.add_edge(ref, closest_node, similarity=round(similarity_value, 2))
+        return G
+        
+        
+        
     
     def get_topics_graph(self,cluster):
         tenders = []
