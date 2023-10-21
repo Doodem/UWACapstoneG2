@@ -5,15 +5,24 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial import distance_matrix as scipy_distance_matrix
 import pandas as pd
 
+import folium
+from folium import plugins
+from folium.features import DivIcon
+from datetime import datetime
+
 class GraphDB:
     
     def __init__(self, data):
         """ Build queryable graph """
         self.data = data
         self.references = list(data.keys())
+        self.titles = [self.data[item]['titles'] for item in self.references]
+        
+        
+        
         self.similarity_matrix = self.compute_similarity_matrix(data)
         self.distance_matrix = self.compute_distance_matrix(data)
-    
+        
     def compute_similarity_matrix(self, data):
         """
         Returns: Computed similarity matrix
@@ -125,3 +134,82 @@ class GraphDB:
         
         plt.show()
         return G   
+    
+    def get_node_positions(self,reference, num_nodes, max_distance,date1,date2,neighbours):
+        query_result = self.closest(reference, num_nodes, max_distance,date1,date2)
+        query_result_neighbours = self.get_neighbours(query_result,reference,neighbours,max_distance,date1,date2,num_nodes)
+        G = self.draw_graph(query_result_neighbours)
+        return nx.get_node_attributes(G, "location"), nx.get_edge_attributes(G,"similarity")
+    
+    def create_map(self,map_center):
+        m = folium.Map(location=map_center, zoom_start=5)
+        return m
+
+
+
+
+
+    def query_and_display(self,reference, num_nodes, max_distance,expire_date,topic,topic_box,neighbours):    
+        if topic_box and topic!= 'Please enter a value':
+
+            t_ = self.get_topics_graph(topic)
+            t = self.draw_graph(t_)        
+            node_positions = nx.get_node_attributes(t, "location")
+            node_similarity = nx.get_edge_attributes(t,"similarity")
+            reference = list(node_positions.keys())[0]
+
+            map_center = node_positions[reference]
+            m = self.create_map(map_center)
+            for ref,position in node_positions.items():
+                title = self.data[ref]['titles']
+                # plot ref marker
+                folium.CircleMarker(location=position,popup=title,fill_color='blue').add_to(m)
+
+                # plot ref label
+                folium.Marker(location=position,popup=reference,icon=DivIcon(
+                icon_size=(150,36),
+                icon_anchor=(0,0),
+                html=f'<div style="font-size: 12pt">{ref}</div>',
+                )).add_to(m)
+            display(m)    
+
+        else:   
+            if reference == 'Please enter a value':
+                return
+            if len(reference) > 20:
+                title_index = self.titles.index(reference)
+                reference = tender_references[title_index]
+
+            edge_text_group = folium.FeatureGroup()
+            node_positions,node_similarity = self.get_node_positions(reference, num_nodes, max_distance,expire_date[0],expire_date[1],neighbours)
+            map_center = node_positions[reference]    
+            # create map with centered on reference 
+            m = self.create_map(map_center)
+
+
+            # add markers for ref positions on map
+            for ref,position in node_positions.items():
+
+                title = self.data[ref]['titles']
+                topics = self.data[ref]['topics']
+                popup = title + "\n " "\n " + "---------" + 'Topics are:'  +str(topics)
+                # plot ref marker
+                folium.CircleMarker(location=position,popup=popup,fill_color='blue').add_to(m)
+                # plot ref label
+                folium.Marker(location=position,popup=reference,icon=DivIcon(
+                icon_size=(150,36),
+                icon_anchor=(0,0),
+                html=f'<div style="font-size: 12pt">{ref}</div>',
+                )).add_to(m)
+
+            for markers, sim in node_similarity.items():
+
+
+                edge = folium.PolyLine([node_positions[markers[0]],node_positions[markers[1]]],popup=str(sim))
+                edge.add_to(m)
+                edge_text = plugins.PolyLineTextPath(edge,text = str(sim),center=True,attributes={'fill': '007DEF', 'font-weight': 'bold', 'font-size': '24'})
+                edge_text_group.add_child(edge_text)
+
+
+            m.add_child(edge_text_group)
+            display(m)
