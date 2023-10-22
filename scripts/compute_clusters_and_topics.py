@@ -24,6 +24,7 @@ for line in tender_refs:
 content = content.replace("[", "")
 content = content.replace("'", "")
 content = content.replace(",", "")
+content = content.replace("]", "")
 tender_refs = content.split(" ")
 
 # sanity check we have all the data exactly corresponding
