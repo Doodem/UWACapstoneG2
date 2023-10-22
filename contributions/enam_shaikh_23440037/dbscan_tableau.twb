@@ -1,0 +1,919 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 20214.22.0213.1102                               -->
+<workbook original-version='18.1' source-build='2021.4.4 (20214.22.0213.1102)' source-platform='win' version='18.1' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <document-format-change-manifest>
+    <_.fcp.AnimationOnByDefault.true...AnimationOnByDefault />
+    <_.fcp.MarkAnimation.true...MarkAnimation />
+    <_.fcp.ObjectModelEncapsulateLegacy.true...ObjectModelEncapsulateLegacy />
+    <_.fcp.ObjectModelTableType.true...ObjectModelTableType />
+    <_.fcp.SchemaViewerObjectModel.true...SchemaViewerObjectModel />
+    <SheetIdentifierTracking />
+    <WindowsPersistSimpleIdentifiers />
+  </document-format-change-manifest>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <_.fcp.AnimationOnByDefault.false...style>
+    <_.fcp.AnimationOnByDefault.false..._.fcp.MarkAnimation.true...style-rule element='animation'>
+      <_.fcp.AnimationOnByDefault.false...format attr='animation-on' value='ao-on' />
+    </_.fcp.AnimationOnByDefault.false..._.fcp.MarkAnimation.true...style-rule>
+  </_.fcp.AnimationOnByDefault.false...style>
+  <datasources>
+    <datasource caption='Sheet1 (dbscan_tableau)' inline='true' name='federated.0zzaal90dchfik1dk8tp018u4b40' version='18.1'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='dbscan_tableau' name='excel-direct.08amqz713cninn14eqkxr0f9oc6u'>
+            <connection class='excel-direct' cleaning='no' compat='no' dataRefreshTime='' filename='C:/Users/skena/Desktop/UWA_DS/Sem4/Capstone_project/DBSCAN/Full_embeddings/dbscan_tableau.xlsx' interpretationMode='0' password='' server='' validate='no' />
+          </named-connection>
+        </named-connections>
+        <_.fcp.ObjectModelEncapsulateLegacy.false...relation connection='excel-direct.08amqz713cninn14eqkxr0f9oc6u' name='Sheet1' table='[Sheet1$]' type='table'>
+          <columns gridOrigin='A1:C912:no:A1:C912:0' header='yes' outcome='6'>
+            <column datatype='real' name='Epsilon' ordinal='0' />
+            <column datatype='real' name='Cluster_Label' ordinal='1' />
+            <column datatype='integer' name='Num_Points' ordinal='2' />
+          </columns>
+        </_.fcp.ObjectModelEncapsulateLegacy.false...relation>
+        <_.fcp.ObjectModelEncapsulateLegacy.true...relation connection='excel-direct.08amqz713cninn14eqkxr0f9oc6u' name='Sheet1' table='[Sheet1$]' type='table'>
+          <columns gridOrigin='A1:C912:no:A1:C912:0' header='yes' outcome='6'>
+            <column datatype='real' name='Epsilon' ordinal='0' />
+            <column datatype='real' name='Cluster_Label' ordinal='1' />
+            <column datatype='integer' name='Num_Points' ordinal='2' />
+          </columns>
+        </_.fcp.ObjectModelEncapsulateLegacy.true...relation>
+        <metadata-records>
+          <metadata-record class='column'>
+            <remote-name>Epsilon</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[Epsilon]</local-name>
+            <parent-name>[Sheet1]</parent-name>
+            <remote-alias>Epsilon</remote-alias>
+            <ordinal>0</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>15</precision>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Cluster_Label</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[Cluster_Label]</local-name>
+            <parent-name>[Sheet1]</parent-name>
+            <remote-alias>Cluster_Label</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>15</precision>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Num_Points</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Num_Points]</local-name>
+            <parent-name>[Sheet1]</parent-name>
+            <remote-alias>Num_Points</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[Sheet1]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='context'>4</attribute>
+              <attribute datatype='string' name='gridOrigin'>&quot;A1:C912:no:A1:C912:0&quot;</attribute>
+              <attribute datatype='boolean' name='header'>true</attribute>
+              <attribute datatype='integer' name='outcome'>6</attribute>
+            </attributes>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column caption='Calculation1' datatype='real' name='[Calculation_705376305583206400]' role='dimension' type='ordinal'>
+        <calculation class='tableau' formula='[Epsilon]' />
+      </column>
+      <column caption='Cluster Label' datatype='real' name='[Cluster_Label]' role='dimension' type='ordinal' />
+      <column datatype='real' name='[Epsilon]' role='dimension' type='ordinal' />
+      <column caption='Num Points' datatype='integer' name='[Num_Points]' role='measure' type='quantitative' />
+      <_.fcp.ObjectModelTableType.true...column caption='Sheet1' datatype='table' name='[__tableau_internal_object_id__].[Sheet1_21E5F156C1ED4902A776C3878E6AB5C4]' role='measure' type='quantitative' />
+      <column-instance column='[Cluster_Label]' derivation='None' name='[none:Cluster_Label:nk]' pivot='key' type='ordinal' />
+      <layout _.fcp.SchemaViewerObjectModel.false...dim-percentage='0.5' _.fcp.SchemaViewerObjectModel.false...measure-percentage='0.4' dim-ordering='alphabetic' measure-ordering='alphabetic' show-structure='true' />
+      <style>
+        <style-rule element='mark'>
+          <encoding attr='color' field='[none:Cluster_Label:nk]' type='palette'>
+            <map to='#499894'>
+              <bucket>7.0</bucket>
+            </map>
+            <map to='#499894'>
+              <bucket>27.0</bucket>
+            </map>
+            <map to='#499894'>
+              <bucket>47.0</bucket>
+            </map>
+            <map to='#499894'>
+              <bucket>67.0</bucket>
+            </map>
+            <map to='#499894'>
+              <bucket>87.0</bucket>
+            </map>
+            <map to='#499894'>
+              <bucket>107.0</bucket>
+            </map>
+            <map to='#499894'>
+              <bucket>127.0</bucket>
+            </map>
+            <map to='#499894'>
+              <bucket>147.0</bucket>
+            </map>
+            <map to='#499894'>
+              <bucket>167.0</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>-1.0</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>19.0</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>39.0</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>59.0</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>79.0</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>99.0</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>119.0</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>139.0</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>159.0</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>3.0</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>23.0</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>43.0</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>63.0</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>83.0</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>103.0</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>123.0</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>143.0</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>163.0</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>11.0</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>31.0</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>51.0</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>71.0</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>91.0</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>111.0</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>131.0</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>151.0</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>171.0</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>8.0</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>28.0</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>48.0</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>68.0</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>88.0</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>108.0</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>128.0</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>148.0</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>168.0</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>4.0</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>24.0</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>44.0</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>64.0</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>84.0</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>104.0</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>124.0</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>144.0</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>164.0</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>17.0</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>37.0</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>57.0</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>77.0</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>97.0</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>117.0</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>137.0</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>157.0</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>0.0</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>20.0</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>40.0</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>60.0</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>80.0</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>100.0</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>120.0</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>140.0</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>160.0</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>15.0</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>35.0</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>55.0</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>75.0</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>95.0</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>115.0</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>135.0</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>155.0</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>5.0</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>25.0</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>45.0</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>65.0</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>85.0</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>105.0</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>125.0</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>145.0</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>165.0</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>12.0</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>32.0</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>52.0</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>72.0</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>92.0</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>112.0</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>132.0</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>152.0</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>172.0</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>13.0</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>33.0</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>53.0</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>73.0</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>93.0</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>113.0</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>133.0</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>153.0</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>173.0</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>16.0</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>36.0</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>56.0</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>76.0</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>96.0</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>116.0</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>136.0</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>156.0</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>18.0</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>38.0</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>58.0</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>78.0</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>98.0</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>118.0</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>138.0</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>158.0</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>9.0</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>29.0</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>49.0</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>69.0</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>89.0</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>109.0</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>129.0</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>149.0</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>169.0</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>6.0</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>26.0</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>46.0</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>66.0</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>86.0</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>106.0</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>126.0</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>146.0</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>166.0</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>1.0</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>21.0</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>41.0</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>61.0</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>81.0</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>101.0</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>121.0</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>141.0</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>161.0</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>14.0</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>34.0</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>54.0</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>74.0</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>94.0</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>114.0</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>134.0</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>154.0</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>174.0</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>10.0</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>30.0</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>50.0</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>70.0</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>90.0</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>110.0</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>130.0</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>150.0</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>170.0</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>2.0</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>22.0</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>42.0</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>62.0</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>82.0</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>102.0</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>122.0</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>142.0</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>162.0</bucket>
+            </map>
+          </encoding>
+        </style-rule>
+      </style>
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;United States&quot;' />
+      </semantic-values>
+      <field-sort-info field-sort-order-type='custom-order'>
+        <field-sort-custom-order field='Epsilon' />
+        <field-sort-custom-order field='Calculation_705376305583206400' />
+        <field-sort-custom-order field='Cluster_Label' />
+        <field-sort-custom-order field='Num_Points' />
+      </field-sort-info>
+      <_.fcp.ObjectModelEncapsulateLegacy.true...object-graph>
+        <objects>
+          <object caption='Sheet1' id='Sheet1_21E5F156C1ED4902A776C3878E6AB5C4'>
+            <properties context=''>
+              <relation connection='excel-direct.08amqz713cninn14eqkxr0f9oc6u' name='Sheet1' table='[Sheet1$]' type='table'>
+                <columns gridOrigin='A1:C912:no:A1:C912:0' header='yes' outcome='6'>
+                  <column datatype='real' name='Epsilon' ordinal='0' />
+                  <column datatype='real' name='Cluster_Label' ordinal='1' />
+                  <column datatype='integer' name='Num_Points' ordinal='2' />
+                </columns>
+              </relation>
+            </properties>
+          </object>
+        </objects>
+      </_.fcp.ObjectModelEncapsulateLegacy.true...object-graph>
+    </datasource>
+  </datasources>
+  <actions>
+    <action caption='Highlight 1 (generated)' name='[Action1_988AD4BAE78A40A39BFD207FCA023D3A]'>
+      <activation auto-clear='true' type='on-select' />
+      <source type='sheet' worksheet='Sheet 1' />
+      <command command='tsc:brush'>
+        <param name='field-captions' value='Cluster Label' />
+        <param name='target' value='Sheet 1' />
+      </command>
+    </action>
+  </actions>
+  <worksheets>
+    <worksheet name='Sheet 1'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='Sheet1 (dbscan_tableau)' name='federated.0zzaal90dchfik1dk8tp018u4b40' />
+          </datasources>
+          <datasource-dependencies datasource='federated.0zzaal90dchfik1dk8tp018u4b40'>
+            <column caption='Cluster Label' datatype='real' name='[Cluster_Label]' role='dimension' type='ordinal' />
+            <column datatype='real' name='[Epsilon]' role='dimension' type='ordinal' />
+            <column caption='Num Points' datatype='integer' name='[Num_Points]' role='measure' type='quantitative' />
+            <column-instance column='[Cluster_Label]' derivation='None' name='[none:Cluster_Label:nk]' pivot='key' type='ordinal' />
+            <column-instance column='[Epsilon]' derivation='None' name='[none:Epsilon:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[Num_Points]' derivation='Sum' name='[sum:Num_Points:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[federated.0zzaal90dchfik1dk8tp018u4b40].[none:Cluster_Label:nk]'>
+            <groupfilter count='2' end='top' function='end' units='records' user:ui-marker='end' user:ui-top-by-field='true'>
+              <groupfilter direction='DESC' expression='SUM([Num_Points])' function='order' user:ui-marker='order'>
+                <groupfilter from='-1.0' function='range' level='[none:Cluster_Label:nk]' to='174.0' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+              </groupfilter>
+            </groupfilter>
+          </filter>
+          <slices>
+            <column>[federated.0zzaal90dchfik1dk8tp018u4b40].[none:Cluster_Label:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='title' class='0' field='[federated.0zzaal90dchfik1dk8tp018u4b40].[sum:Num_Points:qk]' scope='rows' value='Total Tenders' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[federated.0zzaal90dchfik1dk8tp018u4b40].[none:Cluster_Label:nk]' />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.0zzaal90dchfik1dk8tp018u4b40].[sum:Num_Points:qk]</rows>
+        <cols>[federated.0zzaal90dchfik1dk8tp018u4b40].[none:Epsilon:ok]</cols>
+      </table>
+      <simple-id uuid='{F2EA3E8A-8896-4636-B909-227A4E8FFD46}' />
+    </worksheet>
+    <worksheet name='Sheet 2'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='Sheet1 (dbscan_tableau)' name='federated.0zzaal90dchfik1dk8tp018u4b40' />
+          </datasources>
+          <datasource-dependencies datasource='federated.0zzaal90dchfik1dk8tp018u4b40'>
+            <column datatype='real' name='[Epsilon]' role='dimension' type='ordinal' />
+            <column-instance column='[Epsilon]' derivation='Sum' name='[sum:Epsilon:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <text column='[federated.0zzaal90dchfik1dk8tp018u4b40].[sum:Epsilon:qk]' />
+            </encodings>
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-labels-show' value='true' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows />
+        <cols />
+      </table>
+      <simple-id uuid='{9677E806-98B2-4459-B913-4449E6428DDB}' />
+    </worksheet>
+  </worksheets>
+  <windows source-height='30'>
+    <window class='worksheet' maximized='true' name='Sheet 1'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+            <card pane-specification-id='0' param='[federated.0zzaal90dchfik1dk8tp018u4b40].[none:Cluster_Label:nk]' type='color' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card param='[federated.0zzaal90dchfik1dk8tp018u4b40].[none:Cluster_Label:nk]' type='filter' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[federated.0zzaal90dchfik1dk8tp018u4b40].[ctd:Epsilon:ok]</field>
+            <field>[federated.0zzaal90dchfik1dk8tp018u4b40].[none:Num_Points:ok]</field>
+            <field>[federated.0zzaal90dchfik1dk8tp018u4b40].[sum:Cluster_Label:qk]</field>
+            <field>[federated.0zzaal90dchfik1dk8tp018u4b40].[sum:Num_Points:qk]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+      <simple-id uuid='{0A0703A5-F8F2-43D2-90C4-7937AF0F29F5}' />
+    </window>
+    <window class='worksheet' name='Sheet 2'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+      <simple-id uuid='{75E8D856-9C8C-40B8-9C2A-6F26508FE7F5}' />
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='192' name='Sheet 1' width='192'>
+      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
+    </thumbnail>
+    <thumbnail height='24' name='Sheet 2' width='64'>
+      iVBORw0KGgoAAAANSUhEUgAAAEAAAAAYCAYAAABKtPtEAAAACXBIWXMAAA7DAAAOwwHHb6hk
+      AAAC/UlEQVRYhe2Yv0uyaxjHP6+YREb0g6AoJMqpEmqxoSYxWqolp4bGIgnCIamWIBqM+gOi
+      d442J2loq0GixCj6gZJlDiZGKlYmmvd1hjiec5CXc5ZznuD4Wa/r+d7f6/tcNw88P0RE+B+j
+      09qA1lQD0NqA1lQD0NqA1lQD0NqA1lQD0NqA1lQD0NqA1lQD0NqA1nyLAJLJJC6XC6vVyvDw
+      MDs7Oyil8Pv9OBwOrFYrNpsNr9eLUgqAi4uLcm10dBSfz1eu/RmlFHt7e9hsNqxWKy6Xi2Qy
+      +UeDaEwul5PFxUXZ39+XQqEg+XxeHh4e5OrqSpaWliQUCkmpVJLHx0dxOp0SDofl5eVF5ufn
+      5fLyslybm5uTQCBQoX90dCQrKyuSSqWkVCrJwcGBrK6uSrFYFBER/X/1ln/Fzc0N9fX1OBwO
+      9PovO11dXSil8Hg86HRfS2oymRgaGuLj44Onpyc6OjqwWCzl2sTEBOl0ukI/Go3icDhoamoC
+      YGxsjOvra+LxOCaTSfsrEAqFGBkZKQ//Ozqdrjw8QDgc5u7ujp6eHrq7u3l7e+P09BSlFLFY
+      jJOTE3p7eyv0Gxsb8Xq95HI5ADKZDJ+fnyQSia9z/sXZ/hGFQoFMJsP7+zsAsVgMp9MJQD6f
+      Z3NzE5/Ph9lsZn19HaPRSLFYRK/XU1dXV9YplUqkUqkK/cnJSTY2Nsq9zc3NiAi1tbXANwjA
+      bDajlMJoNAJf6zwwMIBSip8/f2K32xkfH//LNgQCAUwmE/39/eh0OkwmEzabDb/f/7fnPT8/
+      k0gkaG9vB75BAH19fZydnREMBsvrfHt7SyQSQUQYHByseKazs5Pz83MikQhKKdLpNIeHh7S1
+      tVX0ZrNZotEoSileX1/Z2trCYrHQ2toKwA8R7X+K3t/fs7a2RigUoqWlBbfbjYiwvLxc8Wnz
+      eDzY7XaOj4/Z3t4mHo/T0NDA9PQ0MzMzGAwGdnd3AZidnSWbzeJ2uwkGg9TU1DA1NcXCwgIG
+      gwH4JgFoieZXQGt+A61c9NeCawtxAAAAAElFTkSuQmCC
+    </thumbnail>
+  </thumbnails>
+</workbook>
