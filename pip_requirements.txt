@@ -1,9 +1,12 @@
+aiohttp==3.8.6
+aiosignal==1.3.1
 anyio==4.0.0
 argon2-cffi==23.1.0
 argon2-cffi-bindings==21.2.0
 arrow==1.3.0
 asttokens==2.4.0
 async-lru==2.0.4
+async-timeout==4.0.3
 attrs==23.1.0
 Babel==2.13.0
 backcall==0.2.0
@@ -18,9 +21,11 @@ click==8.1.7
 comm==0.1.4
 contourpy==1.1.1
 cycler==0.12.1
+datasets==2.14.5
 debugpy==1.8.0
 decorator==5.1.1
 defusedxml==0.7.1
+dill==0.3.7
 et-xmlfile==1.1.0
 exceptiongroup==1.1.3
 executing==2.0.0
@@ -29,7 +34,8 @@ filelock==3.12.4
 folium==0.14.0
 fonttools==4.43.1
 fqdn==1.5.1
-fsspec==2023.9.2
+frozenlist==1.4.0
+fsspec==2023.6.0
 gensim==4.3.2
 huggingface-hub==0.17.3
 idna==3.4
@@ -63,6 +69,8 @@ matplotlib==3.8.0
 matplotlib-inline==0.1.6
 mistune==3.0.2
 mpmath==1.3.0
+multidict==6.0.4
+multiprocess==0.70.15
 nbclient==0.8.0
 nbconvert==7.9.2
 nbformat==5.9.2
@@ -99,6 +107,7 @@ prompt-toolkit==3.0.39
 psutil==5.9.5
 ptyprocess==0.7.0
 pure-eval==0.2.2
+pyarrow==13.0.0
 pycparser==2.21
 Pygments==2.16.1
 pyparsing==3.1.1
@@ -112,6 +121,7 @@ QtPy==2.4.0
 referencing==0.30.2
 regex==2023.10.3
 requests==2.31.0
+responses==0.18.0
 rfc3339-validator==0.1.4
 rfc3986-validator==0.1.1
 rouge==1.0.1
@@ -119,6 +129,7 @@ rpds-py==0.10.6
 safetensors==0.4.0
 scikit-learn==1.3.1
 scipy==1.11.3
+seaborn==0.13.0
 Send2Trash==1.8.2
 sentence-transformers==2.2.2
 sentencepiece==0.1.99
@@ -128,6 +139,7 @@ sniffio==1.3.0
 soupsieve==2.5
 stack-data==0.6.3
 sympy==1.12
+tabulate==0.9.0
 terminado==0.17.1
 threadpoolctl==3.2.0
 tinycss2==1.2.1
@@ -150,3 +162,5 @@ webcolors==1.13
 webencodings==0.5.1
 websocket-client==1.6.4
 widgetsnbextension==4.0.9
+xxhash==3.4.1
+yarl==1.9.2
